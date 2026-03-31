@@ -81,7 +81,7 @@ fraud-detection-ic/
     │   └── preprocessing.py
     ├── .gitignore
     ├── README.md
-    ├── relatorio.pdf
+    ├── slides.pdf
     └── requirements.txt
   ```
 
