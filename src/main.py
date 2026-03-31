@@ -85,6 +85,7 @@ def main():
             print("  ANÁLISE EXPLORATÓRIA DE DADOS (EDA)")
             print("-"*40)
             executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
+            input("\n--> Pressione Enter para continuar para o pré-processamento...")
             clear_console()
 
         # Pré-processamento

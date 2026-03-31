@@ -238,8 +238,7 @@ def executar_experimentacao(df: pd.DataFrame):
     fig.tight_layout()
     caminho = os.path.join(OUTPUT_DIR, "curvas_roc_pr.png")
     fig.savefig(caminho, bbox_inches="tight")
-    print(f"\n  [salvo] {caminho}")
-    plt.show()
+    print(f"   -> Dados salvos em: {caminho}")
 
     # Matrizes de Confusão
     print("\n  --> MATRIZES DE CONFUSÃO")
@@ -266,4 +265,3 @@ def executar_experimentacao(df: pd.DataFrame):
     caminho = os.path.join(OUTPUT_DIR, "matrizes_confusao.png")
     fig.savefig(caminho, bbox_inches="tight")
     print(f"   -> Dados salvos em: {caminho}")
-    plt.show()
