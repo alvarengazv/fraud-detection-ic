@@ -7,21 +7,18 @@ import shutil
 import pandas as pd
 
 # Imports locais
-import eda 
+from eda.eda import executar_eda
 # import preprocessing
 # import modeling
 
 def load_data():
-    # Baixar arquivos completos
     path = kagglehub.dataset_download(
         "sergionefedov/fraud-detection-1m-transactions-7-fraud-types"
     )
 
-    # Criar pasta destino
     destino = "./dataset"
     os.makedirs(destino, exist_ok=True)
 
-    # Copiar (pasta inteira)
     for item in os.listdir(path):
         origem_item = os.path.join(path, item)
         destino_item = os.path.join(destino, item)
@@ -33,7 +30,6 @@ def load_data():
 
     print(f"Arquivos copiados para {destino}")
 
-    # Carregar dataset como DataFrame
     df_transactions = pd.read_csv(f"{destino}/transactions.csv")
     df_account_profiles = pd.read_csv(f"{destino}/account_profiles.csv")
     df_fraud_patterns = pd.read_csv(f"{destino}/fraud_patterns.csv")
@@ -45,36 +41,49 @@ def load_data():
     
     return df_transactions, df_account_profiles, df_fraud_patterns
 
+def clear_console():
+    print("\n"*50)
+    if os.name == 'nt': 
+        os.system('cls')
+    else: 
+       os.system('clear')
+
 def space_return(fase):
     print("\n" + "-"*50 + "\n")
     if fase:
-        print(f"---> Pressione Enter para iniciar a fase {fase}...")
+        print(f"Deseja iniciar a fase de {fase}? (s/n)")
+        inicio = input().strip().lower()
+        if inicio != 's':
+            print(f"Fase de {fase} pulada. Pressione Enter para continuar...")  
+            return False
+
+        print(f"---- Pressione Enter para continuar... ----")
+        clear_console()
+        return True
+        
     else:
-        print(f"---> Pressione Enter para continuar...")
+        print(f"---- Pressione Enter para continuar... ----")
     input()
     print("-"*50 + "\n")
 
 def main():
-    os.system("clear")
-    os.system("cls")
+    clear_console()
 
     print("="*100)
     print("ATIVIDADE PRÁTICA 1 - METODOLOGIA EXPERIMENTAL - INTELIGÊNCIA COMPUTACIONAL")
     print("="*100 + "\n")
 
-    print("-> Dataset escolhido foi: Fraud Detection - 1M Transactions (7 Fraud Types)")
+    print("--> Dataset escolhido foi: Fraud Detection - 1M Transactions (7 Fraud Types)")
     print("\n")
     
-    # Carregamento do dataset
     print("--> Carregando dataset...")
     df_transactions, df_account_profiles, df_fraud_patterns = load_data()
 
-    space_return("Análise Exploratória")
-
-    # Análise exploratória
-    print("--> Análise Exploratória de Dados...")
-    eda.executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
-
+    if space_return("Análise Exploratória de Dados"):
+        print("\n" + "-"*40)
+        print("  ANÁLISE EXPLORATÓRIA DE DADOS (EDA)")
+        print("-"*40)
+        executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
 
     # # Pré-processamento
     # print("\nIniciando Pré-processamento...")
@@ -85,7 +94,6 @@ def main():
     # # Modelagem
     # print("\nIniciando Modelagem...")
     # modeling.executar_modelagem(df)
-
 
 if __name__ == "__main__":
     main()
