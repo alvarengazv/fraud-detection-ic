@@ -54,7 +54,7 @@ Ao mesmo tempo, a aplicação da técnica One-Hot Encoding sobre as variáveis n
 
 ## 📚 O Projeto
 
-Neste repositório você encontrará o código fonte do projeto, bem como os dados utilizados para a análise. O projeto foi desenvolvido em Python. Este trabalho também tem a produção de um slide em PDF para relatar o trabalho, que está disponível em [`Slide`](slides/slide.pdf).
+Neste repositório você encontrará o código fonte do projeto, bem como os dados utilizados para a análise. O projeto foi desenvolvido em Python. Este trabalho também tem a produção de um slide em PDF para relatar o trabalho, que está disponível em [`Slide`](/slides.pdf).
 
 De uma forma compacta e organizada, os arquivos e diretórios estão dispostos da seguinte forma:
 
@@ -222,11 +222,13 @@ Para instalar o projeto, siga os passos abaixo:
 
 1. AZEVEDO, Guilherme A. SOUZA, Maria E. T. **FRAUD-DETECTION-IC**: Atividade Prática 01 - Metodologia Experimental. 2026. Disponível em: [https://github.com/alvarengazv/fraud-detection-ic](https://github.com/alvarengazv/fraud-detection-ic) Acesso em: 31 mar. 2026.
 
-2. SILVA, Alisson M. **Inteligência Computacional**: Dados. Slides de Aula. 2026.
+2. Kaggle. **Financial Fraud Detection Dataset — 1M Transactions**. Disponível em: [https://www.kaggle.com/datasets/sergionefedov/fraud-detection-1m-transactions-7-fraud-types](https://www.kaggle.com/datasets/sergionefedov/fraud-detection-1m-transactions-7-fraud-types) Acesso em: 31 mar. 2026.
 
-3. SILVA, Alisson M. **Inteligência Computacional**: Metodologia dos Experimentos. Slides de Aula. 2026.
+3. SILVA, Alisson M. **Inteligência Computacional**: Dados. Slides de Aula. 2026.
 
-4. SILVA, Alisson M. **Inteligência Computacional**: Experimentos. Slides de Aula. 2026.
+4. SILVA, Alisson M. **Inteligência Computacional**: Metodologia dos Experimentos. Slides de Aula. 2026.
+
+5. SILVA, Alisson M. **Inteligência Computacional**: Experimentos. Slides de Aula. 2026.
 
 
 [vscode-badge]: https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white
