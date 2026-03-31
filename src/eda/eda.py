@@ -166,11 +166,9 @@ def qualidade_dados(df_t: pd.DataFrame, df_p: pd.DataFrame, df_f: pd.DataFrame):
             tem_nulos = True
             print(f"    -> {nome}: {len(df_nulos)} coluna(s) com ausentes")
             
-            # Cabeçalho da tabela
             print(f"    {'Atributo':<25} {'Ausentes':>12}  {'%':>8}")
             print("    " + "-" * 47)
             
-            # Iterando pelas linhas para formatar manualmente
             for col_name, row in df_nulos.iterrows():
                 ausentes = int(row['Ausentes'])
                 pct = row['%']

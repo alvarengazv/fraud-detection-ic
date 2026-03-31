@@ -48,24 +48,6 @@ def clear_console():
     else: 
        os.system('clear')
 
-# def space_return(fase):
-#     print("\n" + "-"*50 + "\n")
-#     if fase:
-#         print(f"Deseja iniciar a fase de {fase}? (s/n)")
-#         inicio = input().strip().lower()
-#         if inicio != 's':
-#             print(f"Fase de {fase} pulada. Pressione Enter para continuar...")  
-#             return False
-
-#         print(f"---- Pressione Enter para continuar... ----")
-#         clear_console()
-#         return True
-        
-#     else:
-#         print(f"---- Pressione Enter para continuar... ----")
-#     input()
-#     print("-"*50 + "\n")
-
 def main():
     clear_console()
 
@@ -80,7 +62,7 @@ def main():
 
     # ── Verificar se já existe dataset pré-processado ─────────────────────
     if os.path.exists(preprocessed_path):
-        print(f"  [INFO] Dataset pré-processado encontrado: {preprocessed_path}")
+        print(f"--> Dataset pré-processado encontrado: {preprocessed_path}")
         resp = input("  Deseja usar o dataset pré-processado existente? [S/n]: ").strip().lower()
         if resp != "n":
             df = pd.read_csv(preprocessed_path)
@@ -96,26 +78,38 @@ def main():
         df_transactions, df_account_profiles, df_fraud_patterns = load_data()
 
         # EDA
-        resp_eda = input("\n  Deseja executar a Análise Exploratória (EDA)? [s/N]: ").strip().lower()
+        resp_eda = input("\n--> Deseja executar a Análise Exploratória (EDA)? [s/N]: ").strip().lower()
         if resp_eda == "s":
-            print("\n--> Análise Exploratória de Dados...")
+            clear_console() 
+            print("\n" + "-"*40)
+            print("  ANÁLISE EXPLORATÓRIA DE DADOS (EDA)")
+            print("-"*40)
             executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
+            clear_console()
 
         # Pré-processamento
-        resp_prep = input("\n  Deseja executar o Pré-processamento? [S/n]: ").strip().lower()
+        resp_prep = input("\n--> Deseja executar o Pré-processamento? [S/n]: ").strip().lower()
         if resp_prep == "n":
-            print("  [AVISO] Sem pré-processamento, não é possível continuar a experimentação.")
+            print("  --> Sem pré-processamento, não é possível continuar a experimentação.")
             return
         else:
-            print("\n--> Iniciando Pré-processamento...")
+            clear_console() 
+            print("\n" + "-"*40)
+            print("  PRÉ-PROCESSAMENTO")
+            print("-"*40)
             df = preprocessing.executar_preprocessing(df_transactions, df_account_profiles, df_fraud_patterns)
 
+    input("\n--> Pressione Enter para continuar para a metodologia experimental...")
+    clear_console() 
+
     # Metodologia Experimental
-    print("\n--> Iniciando Metodologia Experimental...")
+    print("\n" + "-"*40)
+    print("  METODOLOGIA EXPERIMENTAL")
+    print("-"*40)
     experimenting.executar_experimentacao(df)
     
     print("\n" + "-"*50)
 
-
 if __name__ == "__main__":
     main()
+    

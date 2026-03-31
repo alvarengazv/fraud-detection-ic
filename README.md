@@ -60,12 +60,12 @@ De uma forma compacta e organizada, os arquivos e diretórios estão dispostos d
 
   ```.
 fraud-detection-ic/ 
-    ├── images/
+    ├── output/
     │   ├── eda_output/
     │   │   ├── boxplots_por_classe.png
     │   │   ├── correlacao_com_alvo.png
     │   │   └── ... (e outros .png)
-    │   ├── experimenting_outputs/
+    │   ├── experimenting_output/
     │   │   ├── curvas_roc_pr.png
     │   │   ├── kfold_pr_auc.png
     │   │   ├── kfold_resultados.csv

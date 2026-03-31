@@ -1,5 +1,0 @@
-Modelo,Acurácia,Precisão,Recall,F1-Score,PR-AUC,KS Statistic,P@80%Recall,ROC-AUC
-Random Forest,0.9919,0.8758,0.6142,0.722,0.8173,0.8962,0.636,0.986
-XGBoost,0.9914,0.8037,0.6593,0.7244,0.7834,0.8932,0.5957,0.9859
-Reg. Logística (sem norm.),0.9907,0.8023,0.606,0.6904,0.759,0.8737,0.4964,0.9852
-Reg. Logística (com norm.),0.9913,0.8343,0.6169,0.7093,0.7806,0.8886,0.5362,0.9879

@@ -8,7 +8,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-# ─── Configurações visuais ─────────────────────────────────────────────────────
 CORES_PRINCIPAIS = ["#2C3E50", "#E74C3C", "#3498DB", "#2ECC71", "#F39C12", "#9B59B6", "#1ABC9C", "#E67E22"]
 sns.set_theme(style="whitegrid", palette=CORES_PRINCIPAIS)
 plt.rcParams.update({
@@ -20,9 +19,8 @@ plt.rcParams.update({
     "legend.fontsize": 9,
 })
 
-OUTPUT_DIR = "./images/eda_output"
+OUTPUT_DIR = "./output/eda_output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-
 
 def salvar(fig, nome: str):
     caminho = os.path.join(OUTPUT_DIR, nome)

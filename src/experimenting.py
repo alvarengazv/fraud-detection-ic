@@ -16,24 +16,16 @@ import xgboost as xgb
 
 warnings.filterwarnings("ignore")
 
-OUTPUT_DIR = "./images/experimenting_outputs"
+OUTPUT_DIR = "./output/experimenting_output"
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# FUNÇÃO AUXILIAR
-# ══════════════════════════════════════════════════════════════════════════════
-
 def precision_at_recall(prec_array, rec_array, target_recall=0.80):
-    """Retorna a maior precisão onde recall >= target_recall."""
     mask = rec_array >= target_recall
     if mask.any():
         return prec_array[mask].max()
     return 0.0
 
-
 def _criar_modelos():
-    """Retorna um dicionário com todos os modelos a avaliar."""
     return {
         "Random Forest": RandomForestClassifier(n_estimators=100, random_state=42),
         "XGBoost": xgb.XGBClassifier(n_estimators=100, random_state=42),
@@ -44,17 +36,8 @@ def _criar_modelos():
         ]),
     }
 
-
-# ══════════════════════════════════════════════════════════════════════════════
-# VALIDAÇÃO CRUZADA (K-FOLD)
-# ══════════════════════════════════════════════════════════════════════════════
-
 def executar_kfold(X_train_full, y_train_full, n_splits=5):
-    """Executa validação cruzada estratificada e retorna DataFrame com resultados."""
-
-    print("\n" + "="*70)
-    print("  VALIDAÇÃO CRUZADA (Stratified K-Fold)")
-    print("="*70)
+    print("\n\n  --> VALIDAÇÃO CRUZADA (Stratified K-Fold)")
 
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
     modelos = _criar_modelos()
@@ -78,29 +61,27 @@ def executar_kfold(X_train_full, y_train_full, n_splits=5):
 
         print("concluído")
 
-    # ── Montar DataFrame de resultados ────────────────────────────────────────
+    # Montar DataFrame de resultados
     linhas = []
     for nome, scores in resultados.items():
         for fold_i, score in enumerate(scores):
             linhas.append({"Modelo": nome, "Fold": fold_i + 1, "PR-AUC": score})
     df_kfold = pd.DataFrame(linhas)
 
-    # ── Resumo no terminal ────────────────────────────────────────────────────
-    print("\n" + "="*70)
-    print("  RESULTADOS DA VALIDAÇÃO CRUZADA (PR-AUC)")
-    print("="*70 + "\n")
+    # Resumo no terminal
+    print("\n  --> RESULTADOS DA VALIDAÇÃO CRUZADA (PR-AUC)")
 
     resumo = df_kfold.groupby("Modelo")["PR-AUC"].agg(["mean", "std"])
     for nome in modelos:
         row = resumo.loc[nome]
         print(f"  {nome:<30} Média: {row['mean']:.4f} | Desvio Padrão: {row['std']:.4f}")
 
-    # ── Salvar CSV ────────────────────────────────────────────────────────────
+    # Salvar CSV
     csv_path = os.path.join(OUTPUT_DIR, "kfold_resultados.csv")
     df_kfold.to_csv(csv_path, index=False)
-    print(f"\n  [salvo] {csv_path}")
+    print(f"   -> Dados salvos em: {csv_path}")
 
-    # ── Gráfico PR-AUC por fold ───────────────────────────────────────────────
+    # Gráfico PR-AUC por fold 
     fig, ax = plt.subplots(figsize=(10, 5))
     cores = ["#2C3E50", "#E74C3C", "#3498DB", "#2ECC71"]
 
@@ -121,10 +102,9 @@ def executar_kfold(X_train_full, y_train_full, n_splits=5):
 
     img_path = os.path.join(OUTPUT_DIR, "kfold_pr_auc.png")
     fig.savefig(img_path, bbox_inches="tight")
-    print(f"  [salvo] {img_path}")
-    plt.show()
+    print(f"   -> Dados salvos em: {img_path}")
 
-    # ── Boxplot comparativo ───────────────────────────────────────────────
+    # ── Boxplot comparativo 
     fig2, ax2 = plt.subplots(figsize=(10, 5))
 
     dados_box = [resultados[nome] for nome in modelos]
@@ -144,37 +124,34 @@ def executar_kfold(X_train_full, y_train_full, n_splits=5):
 
     img_path2 = os.path.join(OUTPUT_DIR, "kfold_boxplot.png")
     fig2.savefig(img_path2, bbox_inches="tight")
-    print(f"  [salvo] {img_path2}")
-    plt.show()
+    print(f"   -> Dados salvos em: {img_path2}")
 
     return df_kfold
 
-
-# ══════════════════════════════════════════════════════════════════════════════
 # TREINAMENTO FINAL + AVALIAÇÃO NO TESTE
-# ══════════════════════════════════════════════════════════════════════════════
-
 def executar_experimentacao(df: pd.DataFrame):
-    print("\n" + "="*70)
-    print("  SEÇÃO 4 — EXPERIMENTAÇÃO")
-    print("="*70)
+    print("\n  Essa metodologia experimental foi dividida em 4 partes:")
+    print("  1. Validação cruzada (K-Fold)")
+    print("  2. Treinamento final")
+    print("  3. Salvar os dados de teste para avaliação")
+    print("  4. Geração de relatórios")
 
-    # 1. Separar dados de Teste (separados e intocáveis)
+    print("\n  --> ESSA ETAPA PODE DEMORAR BASTANTE!")
+    
+    # Separar dados de Teste (separados e intocáveis)
     y = df["is_fraud"]
     X = df.drop(columns=["is_fraud"])
     X_train_full, X_test, y_train_full, y_test = train_test_split(
         X, y, test_size=0.15, random_state=42, stratify=y
     )
 
-    # 2. Perguntar se deseja rodar K-Fold
-    resposta = input("\n  Deseja executar a validação cruzada (K-Fold)? [s/N]: ").strip().lower()
+    # Perguntar se deseja rodar K-Fold
+    resposta = input("\n    --> Deseja executar a validação cruzada (K-Fold)? [s/N]: ").strip().lower()
     if resposta == "s":
         executar_kfold(X_train_full, y_train_full)
 
-    # 3. Treinamento Final
-    print("\n" + "="*70)
-    print("  TREINAMENTO FINAL")
-    print("="*70)
+    # Treinamento Final
+    print("\n  --> TREINAMENTO FINAL")
 
     modelos = _criar_modelos()
 
@@ -183,7 +160,7 @@ def executar_experimentacao(df: pd.DataFrame):
         modelo.fit(X_train_full, y_train_full)
         print("concluído")
 
-    # 4. Previsões e métricas
+    # Previsões e métricas
     resultados = {}
 
     for nome, modelo in modelos.items():
@@ -211,7 +188,7 @@ def executar_experimentacao(df: pd.DataFrame):
             "Matriz de Confusão": confusion_matrix(y_test, y_pred),
         }
 
-    # 5. Salvar resultados finais em CSV
+    # Salvar resultados finais em CSV
     metricas_csv = ["Acurácia", "Precisão", "Recall", "F1-Score",
                     "PR-AUC", "KS Statistic", "P@80%Recall", "ROC-AUC"]
 
@@ -227,19 +204,15 @@ def executar_experimentacao(df: pd.DataFrame):
     df_resultados.to_csv(csv_path, index=False)
     print(f"\n  [salvo] {csv_path}")
 
-    # 6. Apresentação de resultados
+    # Apresentação de resultados
     for i, (nome, res) in enumerate(resultados.items(), 1):
-        print("\n" + "="*70)
-        print(f"  MODELO {i} - {nome.upper()}")
-        print("="*70)
+        print(f"\n  --> MODELO {i} - {nome.upper()}")
         for m in metricas_csv:
             print(f"  {m:<20}: {res[m]:.4f}")
         print(f"  Matriz de Confusão:\n  {res['Matriz de Confusão']}")
 
-    # 6. Curvas ROC e PR
-    print("\n" + "="*70)
-    print("  CURVAS ROC E PR")
-    print("="*70)
+    # Curvas ROC e PR
+    print("\n  --> CURVAS ROC E PR")
 
     cores = ["#2C3E50", "#E74C3C", "#3498DB", "#2ECC71"]
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
@@ -268,10 +241,8 @@ def executar_experimentacao(df: pd.DataFrame):
     print(f"\n  [salvo] {caminho}")
     plt.show()
 
-    # 7. Matrizes de Confusão
-    print("\n" + "="*70)
-    print("  MATRIZES DE CONFUSÃO")
-    print("="*70)
+    # Matrizes de Confusão
+    print("\n  --> MATRIZES DE CONFUSÃO")
 
     labels = ["Legítima", "Fraude"]
     n_modelos = len(resultados)
@@ -294,5 +265,5 @@ def executar_experimentacao(df: pd.DataFrame):
     fig.tight_layout()
     caminho = os.path.join(OUTPUT_DIR, "matrizes_confusao.png")
     fig.savefig(caminho, bbox_inches="tight")
-    print(f"\n  [salvo] {caminho}")
+    print(f"   -> Dados salvos em: {caminho}")
     plt.show()
