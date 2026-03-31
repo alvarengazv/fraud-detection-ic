@@ -130,7 +130,7 @@ def executar_kfold(X_train_full, y_train_full, n_splits=5):
     dados_box = [resultados[nome] for nome in modelos]
     nomes_box = list(modelos.keys())
 
-    bp = ax2.boxplot(dados_box, patch_artist=True, notch=True,
+    bp = ax2.boxplot(dados_box, patch_artist=True,
                      medianprops={"color": "black", "linewidth": 2})
     for patch, cor in zip(bp["boxes"], cores):
         patch.set_facecolor(cor)
