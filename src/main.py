@@ -8,8 +8,8 @@ import pandas as pd
 
 # Imports locais
 from eda.eda import executar_eda
-# import preprocessing
-# import modeling
+import preprocessing
+import experimenting
 
 def load_data():
     path = kagglehub.dataset_download(
@@ -48,23 +48,23 @@ def clear_console():
     else: 
        os.system('clear')
 
-def space_return(fase):
-    print("\n" + "-"*50 + "\n")
-    if fase:
-        print(f"Deseja iniciar a fase de {fase}? (s/n)")
-        inicio = input().strip().lower()
-        if inicio != 's':
-            print(f"Fase de {fase} pulada. Pressione Enter para continuar...")  
-            return False
+# def space_return(fase):
+#     print("\n" + "-"*50 + "\n")
+#     if fase:
+#         print(f"Deseja iniciar a fase de {fase}? (s/n)")
+#         inicio = input().strip().lower()
+#         if inicio != 's':
+#             print(f"Fase de {fase} pulada. Pressione Enter para continuar...")  
+#             return False
 
-        print(f"---- Pressione Enter para continuar... ----")
-        clear_console()
-        return True
+#         print(f"---- Pressione Enter para continuar... ----")
+#         clear_console()
+#         return True
         
-    else:
-        print(f"---- Pressione Enter para continuar... ----")
-    input()
-    print("-"*50 + "\n")
+#     else:
+#         print(f"---- Pressione Enter para continuar... ----")
+#     input()
+#     print("-"*50 + "\n")
 
 def main():
     clear_console()
@@ -74,26 +74,48 @@ def main():
     print("="*100 + "\n")
 
     print("--> Dataset escolhido foi: Fraud Detection - 1M Transactions (7 Fraud Types)")
-    print("\n")
+    print()
+
+    preprocessed_path = "./dataset/preprocessed.csv"
+
+    # ── Verificar se já existe dataset pré-processado ─────────────────────
+    if os.path.exists(preprocessed_path):
+        print(f"  [INFO] Dataset pré-processado encontrado: {preprocessed_path}")
+        resp = input("  Deseja usar o dataset pré-processado existente? [S/n]: ").strip().lower()
+        if resp != "n":
+            df = pd.read_csv(preprocessed_path)
+            print(f"  Carregado: {df.shape[0]:,} linhas × {df.shape[1]} colunas\n")
+        else:
+            df = None
+    else:
+        df = None
+
+    # ── Carregar dados brutos se necessário ───────────────────────────────
+    if df is None:
+        print("\n--> Carregando dataset bruto...")
+        df_transactions, df_account_profiles, df_fraud_patterns = load_data()
+
+        # EDA
+        resp_eda = input("\n  Deseja executar a Análise Exploratória (EDA)? [s/N]: ").strip().lower()
+        if resp_eda == "s":
+            print("\n--> Análise Exploratória de Dados...")
+            executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
+
+        # Pré-processamento
+        resp_prep = input("\n  Deseja executar o Pré-processamento? [S/n]: ").strip().lower()
+        if resp_prep == "n":
+            print("  [AVISO] Sem pré-processamento, não é possível continuar a experimentação.")
+            return
+        else:
+            print("\n--> Iniciando Pré-processamento...")
+            df = preprocessing.executar_preprocessing(df_transactions, df_account_profiles, df_fraud_patterns)
+
+    # Metodologia Experimental
+    print("\n--> Iniciando Metodologia Experimental...")
+    experimenting.executar_experimentacao(df)
     
-    print("--> Carregando dataset...")
-    df_transactions, df_account_profiles, df_fraud_patterns = load_data()
+    print("\n" + "-"*50)
 
-    if space_return("Análise Exploratória de Dados"):
-        print("\n" + "-"*40)
-        print("  ANÁLISE EXPLORATÓRIA DE DADOS (EDA)")
-        print("-"*40)
-        executar_eda(df_transactions, df_account_profiles, df_fraud_patterns)
-
-    # # Pré-processamento
-    # print("\nIniciando Pré-processamento...")
-    # preprocessing.executar_preprocessing(df)
-
-    # print("\n" + "-"*50)
-
-    # # Modelagem
-    # print("\nIniciando Modelagem...")
-    # modeling.executar_modelagem(df)
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,21 @@
+Modelo,Fold,PR-AUC
+Random Forest,1,0.828687028724003
+Random Forest,2,0.8289585035000436
+Random Forest,3,0.8272619604836946
+Random Forest,4,0.8154967170018003
+Random Forest,5,0.8319743707435079
+XGBoost,1,0.8093216208570827
+XGBoost,2,0.8023902535709612
+XGBoost,3,0.7900776710427174
+XGBoost,4,0.7915464476350483
+XGBoost,5,0.8134310441502447
+Reg. Logística (sem norm.),1,0.7774631527367155
+Reg. Logística (sem norm.),2,0.7529434675959674
+Reg. Logística (sem norm.),3,0.7351438180934176
+Reg. Logística (sem norm.),4,0.7404009633371271
+Reg. Logística (sem norm.),5,0.7518982880595065
+Reg. Logística (com norm.),1,0.7958804219890386
+Reg. Logística (com norm.),2,0.7930492075663803
+Reg. Logística (com norm.),3,0.7875504759645588
+Reg. Logística (com norm.),4,0.7878978824943741
+Reg. Logística (com norm.),5,0.7955980508032233
