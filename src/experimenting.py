@@ -244,24 +244,37 @@ def executar_experimentacao(df: pd.DataFrame):
     print("\n  --> MATRIZES DE CONFUSÃO")
 
     labels = ["Legítima", "Fraude"]
-    n_modelos = len(resultados)
-    fig, axes = plt.subplots(1, n_modelos, figsize=(6 * n_modelos, 5))
-    if n_modelos == 1:
-        axes = [axes]
+    nomes = list(resultados.keys())
 
-    for ax, (nome, res) in zip(axes, resultados.items()):
-        cm = res["Matriz de Confusão"]
-        cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
-        sns.heatmap(cm_norm, annot=True, fmt=".4f", cmap="Blues",
-                    xticklabels=labels, yticklabels=labels,
-                    linewidths=0.5, ax=ax, vmin=0, vmax=1,
-                    annot_kws={"size": 14, "fontweight": "bold"})
-        ax.set_title(f"{nome}", fontsize=11, fontweight="bold")
-        ax.set_xlabel("Predito")
-        ax.set_ylabel("Real")
+    # Função auxiliar para plotar um par de matrizes
+    def _plotar_par_cm(nomes_par, titulo, nome_arquivo):
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+        for ax, nome in zip(axes, nomes_par):
+            cm = resultados[nome]["Matriz de Confusão"]
+            cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
+            sns.heatmap(cm_norm, annot=True, fmt=".4f", cmap="Blues",
+                        xticklabels=labels, yticklabels=labels,
+                        linewidths=0.5, ax=ax, vmin=0, vmax=1,
+                        annot_kws={"size": 14, "fontweight": "bold"})
+            ax.set_title(f"{nome}", fontsize=11, fontweight="bold")
+            ax.set_xlabel("Predito")
+            ax.set_ylabel("Real")
+        fig.suptitle(titulo, fontsize=15, fontweight="bold")
+        fig.tight_layout()
+        caminho = os.path.join(OUTPUT_DIR, nome_arquivo)
+        fig.savefig(caminho, bbox_inches="tight")
+        print(f"   -> Dados salvos em: {caminho}")
 
-    fig.suptitle("Matrizes de Confusão Normalizadas", fontsize=15, fontweight="bold")
-    fig.tight_layout()
-    caminho = os.path.join(OUTPUT_DIR, "matrizes_confusao.png")
-    fig.savefig(caminho, bbox_inches="tight")
-    print(f"   -> Dados salvos em: {caminho}")
+    # 1) Random Forest + XGBoost
+    _plotar_par_cm(
+        nomes[:2],
+        "Matrizes de Confusão — Modelos Baseados em Árvore",
+        "matrizes_confusao_arvores.png"
+    )
+
+    # 2) Regressão Logística (sem norm.) + Regressão Logística (com norm.)
+    _plotar_par_cm(
+        nomes[2:],
+        "Matrizes de Confusão — Regressão Logística",
+        "matrizes_confusao_regressao.png"
+    )
